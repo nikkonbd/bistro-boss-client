@@ -15,11 +15,9 @@ import slide5 from '../../../assets/home/slide5.jpg';
 const Category = () => {
     return (
         <div className='max-w-6xl mx-auto my-16'>
-            <div className='text-center mb-8'>
-                <hr className='w-[300px] mx-auto mb-3' />
-                <p>---From 11:00am to 10:00pm---</p>
-                <h2 className='text-4xl font-medium'>ORDER ONLINE</h2>
-                <hr className='w-[300px] mx-auto mt-4' />
+            <div className='mx-auto text-center md:w-3/12 mb-8'>
+                <p className='text-yellow-500 pb-3'>---From 11:00am to 10:00pm---</p>
+                <h2 className='text-4xl font-medium border-y-4 py-3'>ORDER ONLINE</h2>
             </div>
             <Swiper
                 slidesPerView={4}
