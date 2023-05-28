@@ -1,15 +1,22 @@
 /* eslint-disable no-unused-vars */
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import loginImg from '../../assets/others/authentication1.png';
 import { loadCaptchaEnginge, LoadCanvasTemplate, LoadCanvasTemplateNoReload, validateCaptcha } from 'react-simple-captcha';
 import { AuthContext } from '../../providers/AuthProviders';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+import Swal from 'sweetalert2';
+import SocialLogin from '../shared/Social/SocialLogin';
 
 const Login = () => {
 
-    const { user, login } = useContext(AuthContext);
+    const location = useLocation();
+    const navigate = useNavigate();
 
-    const captchaRef = useRef(null)
+    const from = location.state?.from?.pathname || "/";
+
+    const { login } = useContext(AuthContext);
+
     const [disable, setDisable] = useState(true);
 
     useEffect(() => {
@@ -26,12 +33,24 @@ const Login = () => {
             .then(result => {
                 const user = result.user;
                 console.log(user);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Login in SuccessFully!',
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInDown'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    }
+                })
+                navigate(from, { replace: true });
             })
             .catch(error => console.log(error));
+        event.target.reset();
     }
 
-    const handleValidateCaptcha = () => {
-        const user_captcha_value = captchaRef.current.value;
+    const handleValidateCaptcha = (e) => {
+        const user_captcha_value = e.target.value;
         if (validateCaptcha(user_captcha_value)) {
             setDisable(false)
         } else {
@@ -40,6 +59,9 @@ const Login = () => {
     }
     return (
         <div className='max-w-6xl mx-auto'>
+            <Helmet>
+                <title>Bistro Boss || Login</title>
+            </Helmet>
             <div className="hero min-h-screen">
                 <div className="hero-content flex">
                     <div className="text-center lg:text-left">
@@ -67,14 +89,16 @@ const Login = () => {
                                 <label className="label">
                                     <LoadCanvasTemplate />
                                 </label>
-                                <input type="text" ref={captchaRef} name='captcha' placeholder="enter captcha value" className="input input-bordered" required />
-                                <button onClick={handleValidateCaptcha} className="btn btn-outline btn-xs mt-4">Validate</button>
+                                <input type="text" onBlur={handleValidateCaptcha} name='captcha' placeholder="enter captcha value" className="input input-bordered" required />
+                                {/* <button className="btn btn-outline btn-xs mt-4">Validate</button> */}
                             </div>
                             <div className="form-control mt-6">
                                 <input disabled={disable} className="btn btn-primary" type="submit" value="Login" />
                             </div>
                         </form>
-                        <p className='ml-8 mb-6 text-yellow-600'><small>New Here? <Link to={'/signUp'}>Create an Account</Link></small></p>
+                        <p className='ml-8 mb-2 text-yellow-600'><small>New Here? <Link to={'/signUp'}>Create an Account</Link> Or Sign in with?</small></p>
+                        <div className="divider"></div>
+                        <SocialLogin></SocialLogin>
                     </div>
                 </div>
             </div>

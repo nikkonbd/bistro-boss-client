@@ -1,15 +1,39 @@
 /* eslint-disable no-unused-vars */
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../../../providers/AuthProviders';
+import { FaShoppingCart } from 'react-icons/fa';
+import useCart from '../../../Hooks/UseCart';
 
 const Navbar = () => {
+
+    const { user, logOut } = useContext(AuthContext);
+    const [cart] = useCart();
+
+    const handleLogout = () => {
+        logOut()
+            .then(() => { })
+            .catch(error => console.log(error))
+    }
     const navItems = <>
         <li><Link to={'/'}>Home</Link></li>
         <li><Link to={'/contact'}>Contact US</Link></li>
         <li><Link to={'/dashboard'}>Dashboard</Link></li>
         <li><Link to={'/menu'}>Our Menu</Link></li>
         <li><Link to={'/shop/salads'}>Our Shop</Link></li>
-        <li><Link to={'/login'}>Login</Link></li>
+        <li><Link to={'/secret'}>Secret</Link></li>
+        <li><Link to={'/dashboard/mycart'}>
+            <button className="flex gap-1">
+                <FaShoppingCart></FaShoppingCart>
+                <div className="badge badge-secondary">+{cart?.length || 0}</div>
+            </button>
+        </Link></li>
+        {
+            user ? <>
+                <li><span>{user?.displayName}</span></li>
+                <li><Link><button onClick={handleLogout} className='btn btn-ghost'>Logout</button></Link></li>
+            </> : <li><Link to={'/login'}>Login</Link></li>
+        }
     </>
     return (
         <div className=''>
